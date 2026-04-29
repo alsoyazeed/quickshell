@@ -6,7 +6,7 @@ import Quickshell.Hyprland
 
 Rectangle {
     id: root
-    implicitWidth: 400
+    implicitWidth: 200
 
     implicitHeight: 40
     color: "transparent"
@@ -15,7 +15,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 4
         Repeater {
-            model: 9
+            model: 6
 
             Rectangle {
                 id: ws
@@ -28,13 +28,13 @@ Rectangle {
                 radius: height / 2
                 Behavior on scale {
                     NumberAnimation {
-                        duration: root.animationDuration
+                        duration: 350
                         easing.type: Easing.OutExpo // Smooth, fast start, slow end
                     }
                 }
                 Behavior on width {
                     NumberAnimation {
-                        duration: root.animationDuration
+                        duration: 350
                         easing.type: Easing.OutExpo // Smooth, fast start, slow end
                     }
                 }
