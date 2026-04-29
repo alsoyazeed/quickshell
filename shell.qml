@@ -1,4 +1,6 @@
 // qmllint disable uncreatable-type
+// qmllint disable unused-imports
+// qmllint disable unqualified
 import Quickshell
 import QtQuick
 import QtQuick.Layouts
