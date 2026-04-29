@@ -12,25 +12,34 @@ Item {
     implicitHeight: Math.min(250, Math.max(cHeight + padding * 2, yS))
     readonly property int cWidth: container.childrenRect.width
     readonly property int cHeight: container.childrenRect.height
-    readonly property int xS: dragHand.centroid.position.x
-    property int yS: dragHand.centroid.position.y
+    readonly property real resistance: 0.8 // Lower = heavier/more resistance
     property int padding: 15
     property int radius: 16
-    property int animationDuration: 350
+    readonly property int xS: {
+        let delta = dragHand.centroid.position.x - (cWidth / 2);
+        return cWidth + (delta * resistance);
+    }
+
+    readonly property int yS: {
+        let delta = dragHand.centroid.position.y - (cHeight / 2);
+        return cHeight + (delta * resistance);
+    }
 
     width: implicitWidth
     height: implicitHeight
 
     Behavior on width {
         SpringAnimation {
-            spring: 2
-            damping: 0.2
+            spring: 5      // Higher tension
+            damping: 0.7    // More friction/weight
+            epsilon: 0.1
         }
     }
     Behavior on height {
         SpringAnimation {
-            spring: 2
-            damping: 0.2
+            spring: 5      // Higher tension
+            damping: 0.7    // More friction/weight
+            epsilon: 0.1
         }
     }
 
