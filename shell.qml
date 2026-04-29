@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Wayland
 import "./helpers"
 import "./containor"
 import "./widgets"
@@ -13,9 +14,7 @@ ShellRoot {
     PanelWindow {
         id: root
         implicitHeight: 40
-        HoverHandler {
-            id: hoverHandb
-        }
+
         anchors {
             top: true
             right: true
@@ -27,13 +26,15 @@ ShellRoot {
         }
         color: 'transparent'
 
-        exclusionMode: ExclusionMode.Ignore
-        exclusiveZone: 0
+        exclusionMode: ExclusionMode.Normal
+
+        WlrLayershell.layer: wlrlayer.top
 
         mask: Region {
-            item: content
+            item: content.widgets
         }
         IslandState {
+            id: content
             anchors.horizontalCenter: parent.horizontalCenter
         }
     }

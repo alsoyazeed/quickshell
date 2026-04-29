@@ -9,39 +9,29 @@ Item {
     // This allows you to drop any widget inside the container in shell.qml
     default property alias content: container.data
 
-    implicitWidth: Math.min(cWidth + 200, Math.max(cWidth + padding * 2, xS))
-    implicitHeight: Math.min(cHeight + 200, Math.max(cHeight + padding * 2, yS))
-    readonly property int cWidth: contentLoader.item ? contentLoader.item.width : 0
-    readonly property int cHeight: contentLoader.item ? contentLoader.item.height : 0
+    implicitWidth: baseWidth + Math.abs(stretchX) + 20
+    implicitHeight: baseHeight + Math.abs(stretchY) + 10
 
-    readonly property real resistance: 0.4 // Lower = heavier/more resistance
-    property int padding: 15
-    property int radius: 16
-    readonly property int xS: {
-        let delta = dragHand.centroid.position.x - (cWidth / 2);
-        return cWidth + (delta * resistance);
-    }
+    property real stretchX: dragHand.active ? dragHand.translation.x : 0
+    property real stretchY: dragHand.active ? dragHand.translation.y : 0
+    property real baseWidth: contentLoader.item ? contentLoader.item.width : 0
+    property real baseHeight: contentLoader.item ? contentLoader.item.height : 0
 
-    readonly property int yS: {
-        let delta = dragHand.centroid.position.y - (cHeight / 2);
-        return cHeight + (delta * resistance);
-    }
-
-    width: implicitWidth
-    height: implicitHeight
-
-    Behavior on width {
-        SpringAnimation {
-            spring: 5      // Higher tension
-            damping: 0.7    // More friction/weight
-            epsilon: 0.1
+    x: stretchX < 0 ? stretchX : 0
+    y: stretchY < 0 ? stretchY : 0
+    Behavior on implicitWidth {
+        NumberAnimation {
+            duration: 250
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.9
         }
     }
-    Behavior on height {
-        SpringAnimation {
-            spring: 5      // Higher tension
-            damping: 0.7    // More friction/weight
-            epsilon: 0.1
+
+    Behavior on implicitHeight {
+        NumberAnimation {
+            duration: 250
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.9
         }
     }
     property var widgets: ["../widgets/Workspace.qml", "../widgets/Launcher.qml"]
@@ -50,29 +40,34 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-
-        color: "#1a1b26"
-        border.color: "#3b4252"
-        border.width: 1
-        radius: root.radius
         clip: true
+        color: '#000000'
+        border.color: "#3b4252"
+        border.width: 0
+        radius: 14
         DragHandler {
             id: dragHand
         }
 
         Item {
             id: container
-            anchors.centerIn: parent
+            anchors {
+                left: stretchX >= 0 ? parent.left : undefined
+                right: stretchX < 0 ? parent.right : undefined
 
+                top: stretchY >= 0 ? parent.top : undefined
+                bottom: stretchY < 0 ? parent.bottom : undefined
+
+                // fallback when not dragging
+                horizontalCenter: dragHand.active ? undefined : parent.horizontalCenter
+                verticalCenter: dragHand.active ? undefined : parent.verticalCenter
+            }
             Loader {
                 id: contentLoader
-                asynchronous: true
+                asynchronous: false
                 source: root.widgets[root.currentIndex]
                 anchors.centerIn: parent
                 opacity: status === Loader.Ready ? 1 : 0
-                onLoaded: {
-                    console.log("Async Load Complete:", source);
-                }
 
                 Behavior on opacity {
                     NumberAnimation {

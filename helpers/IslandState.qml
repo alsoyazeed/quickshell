@@ -14,6 +14,7 @@ Item {
             container.currentIndex = (container.currentIndex + 1) % container.widgets.length;
         }
     }
+    property var widgets: container
     IslandContainor {
         id: container
         anchors.horizontalCenter: parent.horizontalCenter

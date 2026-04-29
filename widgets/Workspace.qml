@@ -38,11 +38,9 @@ Rectangle {
                         easing.type: Easing.OutExpo // Smooth, fast start, slow end
                     }
                 }
-                MouseArea {
-                    id: mArea
-                    anchors.fill: parent
-                    onClicked: Hyprland.dispatch("workspace " + (index + 1))
-                    hoverEnabled: true
+                TapHandler {
+                    id: tapHand
+                    onTapped: Hyprland.dispatch("workspace " + (index + 1))
                 }
             }
         }
