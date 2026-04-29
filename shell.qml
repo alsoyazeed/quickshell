@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
+import "./helpers"
 import "./containor"
 import "./widgets"
 
@@ -13,7 +14,7 @@ ShellRoot {
         id: root
         implicitHeight: 40
         HoverHandler {
-            id: hoverHand
+            id: hoverHandb
         }
         anchors {
             top: true
@@ -32,20 +33,8 @@ ShellRoot {
         mask: Region {
             item: content
         }
-        IpcHandler {
-            id: ipc
-            target: "ui"
-            function toggleIsland() {
-                content.visible = !content.visible;
-            }
-        }
-        IslandContainor {
-            id: content
+        IslandState {
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: false
-            Workspace {
-                anchors.centerIn: parent
-            }
         }
     }
 }
