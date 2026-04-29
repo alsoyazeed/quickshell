@@ -3,11 +3,15 @@ import Quickshell
 import QtQuick
 import QtQuick.Layouts
 import "./containor"
+import "./widgets"
 
 ShellRoot {
     PanelWindow {
         id: root
         implicitHeight: 40
+        HoverHandler {
+            id: hoverHand
+        }
         anchors {
             top: true
             left: true
@@ -23,6 +27,10 @@ ShellRoot {
         IslandContainor {
             id: content
             anchors.horizontalCenter: parent.horizontalCenter
+            Clock {
+                id: clock
+                implicitWidth: hoverHand.hovered ? 190 : 100
+            }
         }
     }
 }

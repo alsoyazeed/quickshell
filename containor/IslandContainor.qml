@@ -48,7 +48,7 @@ Item {
         Item {
             id: container
             Layout.alignment: Qt.AlignCenter
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.centerIn: parent
             // This is where the magic happens:
             // All children will be centered here, and the parent
             // will animate its size to wrap around them.
