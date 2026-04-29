@@ -1,6 +1,8 @@
 // qmllint disable uncreatable-type
 import Quickshell
 import QtQuick
+import QtQuick.Layouts
+import "./containor"
 
 ShellRoot {
     PanelWindow {
@@ -8,12 +10,19 @@ ShellRoot {
         implicitHeight: 40
         anchors {
             top: true
+            left: true
+            right: true
+            bottom: true
         }
-        exclusionMode: ExclusionMode.Ignore
-        Rectangle {
+        color: 'transparent'
 
-            anchors.fill: parent
-            color: 'red'
+        exclusionMode: ExclusionMode.Ignore
+        mask: Region {
+            item: content
+        }
+        IslandContainor {
+            id: content
+            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 }
