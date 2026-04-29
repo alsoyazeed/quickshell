@@ -18,6 +18,9 @@ ShellRoot {
             right: true
             bottom: true
         }
+        margins {
+            top: 20
+        }
         color: 'transparent'
 
         exclusionMode: ExclusionMode.Ignore
@@ -27,9 +30,8 @@ ShellRoot {
         IslandContainor {
             id: content
             anchors.horizontalCenter: parent.horizontalCenter
-            Clock {
-                id: clock
-                implicitWidth: hoverHand.hovered ? 190 : 100
+            Workspace {
+                anchors.centerIn: parent
             }
         }
     }
