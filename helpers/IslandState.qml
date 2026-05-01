@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell.Io
-import Quickshell
 import "../containor"
 
 Item {
@@ -8,6 +7,7 @@ Item {
         id: ipc
         target: "ui"
         function toggleIsland() {
+            container.enabled = !container.enabled;
             container.visible = !container.visible;
         }
         function cycleIsland() {

@@ -11,9 +11,9 @@ import "./containor"
 import "./widgets"
 
 ShellRoot {
+
     PanelWindow {
         id: root
-        implicitHeight: 40
 
         anchors {
             top: true
@@ -22,16 +22,16 @@ ShellRoot {
             bottom: true
         }
         margins {
-            top: 20
+            top: 5
         }
-        color: 'transparent'
+        color: "transparent"
 
-        exclusionMode: ExclusionMode.Normal
-
-        WlrLayershell.layer: wlrlayer.top
+        exclusionMode: ExclusionMode.Ignore
+        WlrLayershell.layer: wlrlayer.Top
+        exclusiveZone: 10
 
         mask: Region {
-            item: content.widgets
+            item: content.widgets.visible ? content.widgets : null
         }
         IslandState {
             id: content

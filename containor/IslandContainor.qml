@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import QtQuick.Layouts
+import Qt.labs.folderlistmodel
 import "../widgets"
 
 Item {
@@ -8,17 +9,13 @@ Item {
 
     // This allows you to drop any widget inside the container in shell.qml
     default property alias content: container.data
+    property real maxIslandWidth: 100
+    implicitWidth: baseWidth + 40
+    implicitHeight: baseHeight + 10
 
-    implicitWidth: baseWidth + Math.abs(stretchX) + 20
-    implicitHeight: baseHeight + Math.abs(stretchY) + 10
-
-    property real stretchX: dragHand.active ? dragHand.translation.x : 0
-    property real stretchY: dragHand.active ? dragHand.translation.y : 0
     property real baseWidth: contentLoader.item ? contentLoader.item.width : 0
     property real baseHeight: contentLoader.item ? contentLoader.item.height : 0
 
-    x: stretchX < 0 ? stretchX : 0
-    y: stretchY < 0 ? stretchY : 0
     Behavior on implicitWidth {
         NumberAnimation {
             duration: 250
@@ -34,8 +31,39 @@ Item {
             easing.overshoot: 1.9
         }
     }
-    property var widgets: ["../widgets/Workspace.qml", "../widgets/Launcher.qml"]
     property int currentIndex: 0
+    property var widgets: []
+    FolderListModel {
+        id: widgetScanner
+        folder: Qt.resolvedUrl("../widgets")
+        nameFilters: ["*.qml"]
+        showDirs: false
+
+        // Triggers when the folder scanner finishes loading
+        onStatusChanged: {
+            if (status === FolderListModel.Ready) {
+                let tempWidgets = [];
+                let defaultIndex = 0; // Fallback to index 0 if not found
+
+                for (let i = 0; i < count; i++) {
+                    let url = get(i, "fileUrl");
+                    if (url) {
+                        tempWidgets.push(url);
+
+                        // Check if the file is the default widget
+                        let fileName = get(i, "fileName");
+                        if (fileName === "Clock.qml") {
+                            defaultIndex = i;
+                        }
+                    }
+                }
+
+                root.widgets = tempWidgets;
+                root.currentIndex = defaultIndex; // Set default widget index
+                console.log("Scanned widgets automatically. Default is at index:", defaultIndex);
+            }
+        }
+    }
 
     Rectangle {
         id: background
@@ -45,27 +73,16 @@ Item {
         border.color: "#3b4252"
         border.width: 0
         radius: 14
-        DragHandler {
-            id: dragHand
-        }
 
         Item {
             id: container
-            anchors {
-                left: stretchX >= 0 ? parent.left : undefined
-                right: stretchX < 0 ? parent.right : undefined
-
-                top: stretchY >= 0 ? parent.top : undefined
-                bottom: stretchY < 0 ? parent.bottom : undefined
-
-                // fallback when not dragging
-                horizontalCenter: dragHand.active ? undefined : parent.horizontalCenter
-                verticalCenter: dragHand.active ? undefined : parent.verticalCenter
-            }
+            height: contentLoader.item.height
+            width: contentLoader.item.width
+            anchors.centerIn: parent
             Loader {
                 id: contentLoader
                 asynchronous: false
-                source: root.widgets[root.currentIndex]
+                source: root.widgets.length > 0 ? root.widgets[root.currentIndex] : ""
                 anchors.centerIn: parent
                 opacity: status === Loader.Ready ? 1 : 0
 
